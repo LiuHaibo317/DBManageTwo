@@ -1,5 +1,5 @@
 """
-湘江新区大学生创业投后服务企业帮扶台账管理系统 - Streamlit版本
+“一中心一基地”信息管理系统 - Streamlit版本
 
 使用说明：
 1. 安装依赖：pip install streamlit pandas openpyxl plotly reportlab
@@ -19,7 +19,7 @@ from plotly.subplots import make_subplots
 
 # 设置页面配置（必须在所有Streamlit命令之前）
 st.set_page_config(
-    page_title="湘江新区大学生创业投后服务企业帮扶台账管理系统",
+    page_title="“一中心一基地”信息管理系统 ",
     page_icon="🏢",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -139,7 +139,7 @@ st.markdown("""
 
 
 class EnterpriseSupportSystem:
-    """企业帮扶管理系统核心类"""
+    """“一中心一基地”信息管理系统 核心类"""
 
     # 权限常量定义
     PERMISSIONS = {
@@ -3514,15 +3514,15 @@ def show_system_info():
     st.markdown("### ℹ️ 系统信息")
 
     info = {
-        "系统名称": "湘江新区大学生创业投后服务企业帮扶台账管理系统",
+        "系统名称": "“一中心一基地”信息管理系统 ",
         "版本": "2.0.0",
         "数据库": "SQLite",
         "开发语言": "Python 3.8+",
         "界面框架": "Streamlit",
         "数据格式支持": "CSV, Excel",
         "安全特性": "用户权限管理、操作日志、数据备份",
-        "开发者": "湘江新区信息技术部",
-        "最后更新": "2024年1月",
+        "开发者": "一中心一基地",
+        "最后更新": "2026年1月",
         "技术支持": "support@example.com"
     }
 
@@ -3613,7 +3613,7 @@ def main():
         st.session_state.selected_menu = "🏠 仪表盘"
 
     # 显示标题
-    st.markdown('<h1 class="main-header">湘江新区大学生创业投后服务企业帮扶台账管理系统</h1>',
+    st.markdown('<h1 class="main-header">“一中心一基地”信息管理系统 </h1>',
                 unsafe_allow_html=True)
 
     # 侧边栏
