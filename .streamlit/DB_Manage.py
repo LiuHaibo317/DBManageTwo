@@ -985,6 +985,8 @@ def show_welcome_page():
         - 🔒 **安全登录**: 用户权限管理，数据安全存储
         """)
 
+        st.markdown("### 🔑 默认登录信息")
+        st.code("用户名: admin\n密码: admin123")
 
         # 显示数据库统计
         stats = system.get_database_stats()
