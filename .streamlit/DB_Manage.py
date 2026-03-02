@@ -975,7 +975,7 @@ def show_welcome_page():
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.markdown("### 📋 系统介绍")
         st.write("""
-        本系统用于管理湘江新区大学生创业投后服务企业帮扶台账，支持：
+        本系统用于管理”一中心一基地“信息台账，支持：
 
         - 📊 **数据管理**: 新增、编辑、删除企业帮扶数据
         - 📋 **表单管理**: 自定义表单字段，创建新的数据表
@@ -985,7 +985,7 @@ def show_welcome_page():
         - 🔒 **安全登录**: 用户权限管理，数据安全存储
         """)
 
-        
+
         # 显示数据库统计
         stats = system.get_database_stats()
         st.markdown("### 📊 系统统计")
