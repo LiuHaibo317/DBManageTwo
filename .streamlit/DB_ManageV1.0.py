@@ -1,15 +1,9 @@
 """
-“一中心一基地”信息管理系统 - Streamlit版本（GitHub存储版）
+“一中心一基地”信息管理系统 - Streamlit版本
 
 使用说明：
-1. 安装依赖：pip install streamlit pandas openpyxl plotly reportlab GitPython
+1. 安装依赖：pip install streamlit pandas openpyxl plotly reportlab
 2. 运行应用：streamlit run enterprise_support_streamlit.py
-3. 部署到 Streamlit Cloud 时，在 Secrets 中添加 GitHub 配置：
-   [github]
-   repo_url = "https://github.com/yourname/your-repo.git"
-   token = "ghp_xxx"
-   branch = "main"
-   db_filename = "enterprise_support.db"
 """
 
 import streamlit as st
@@ -21,10 +15,7 @@ from datetime import datetime
 import os
 import io
 import plotly.express as px
-import tempfile
-import shutil
-import git
-from git import Repo
+from plotly.subplots import make_subplots
 
 # 设置页面配置（必须在所有Streamlit命令之前）
 st.set_page_config(
@@ -148,7 +139,7 @@ st.markdown("""
 
 
 class EnterpriseSupportSystem:
-    """“一中心一基地”信息管理系统 核心类（支持GitHub存储）"""
+    """“一中心一基地”信息管理系统 核心类"""
 
     # 权限常量定义
     PERMISSIONS = {
@@ -194,114 +185,8 @@ class EnterpriseSupportSystem:
     }
 
     def __init__(self):
-        """初始化系统，尝试从GitHub同步数据库，否则使用本地文件"""
-        self.use_github = False
-        self.repo = None
-        self.local_repo_path = None
-        self.db_filename = "enterprise_support.db"
-
-        # 尝试从secrets读取GitHub配置
-        try:
-            github_config = st.secrets.get("github", {})
-            if github_config and all(k in github_config for k in ["repo_url", "token", "branch"]):
-                self.github_repo_url = github_config["repo_url"]
-                self.github_token = github_config["token"]
-                self.github_branch = github_config["branch"]
-                self.db_filename = github_config.get("db_filename", "enterprise_support.db")
-                self.use_github = True
-        except Exception:
-            # 没有secrets或配置不全，使用本地文件
-            pass
-
-        if self.use_github:
-            # 使用GitHub存储模式
-            self._init_github_repo()
-        else:
-            # 本地开发模式
-            self.db_path = "enterprise_support.db"
-            self.init_database()
-
-    def _init_github_repo(self):
-        """初始化GitHub仓库：克隆到临时目录"""
-        try:
-            # 创建临时目录存放仓库
-            self.local_repo_path = tempfile.mkdtemp(prefix="github_db_")
-            repo_url_with_auth = self.github_repo_url.replace("https://", f"https://{self.github_token}@")
-
-            # 浅克隆指定分支
-            self.repo = Repo.clone_from(
-                repo_url_with_auth,
-                self.local_repo_path,
-                branch=self.github_branch,
-                depth=1  # 只拉取最新提交，加快速度
-            )
-
-            self.db_path = os.path.join(self.local_repo_path, self.db_filename)
-
-            # 如果仓库中还没有数据库文件，创建空文件并初始化
-            if not os.path.exists(self.db_path):
-                self.init_database()
-                # 初始化后立即提交到GitHub
-                self._push_to_github("初始化数据库")
-
-            st.success(f"✅ 已从GitHub同步数据库: {self.db_filename}")
-        except Exception as e:
-            st.error(f"❌ GitHub同步失败: {str(e)}，使用本地临时文件")
-            # 降级到临时文件
-            self.db_path = os.path.join(tempfile.gettempdir(), self.db_filename)
-            self.init_database()
-
-    def _push_to_github(self, commit_message="更新数据库"):
-        """将本地修改提交并推送到GitHub"""
-        if not self.use_github or not self.repo:
-            return False
-
-        try:
-            # 添加数据库文件
-            self.repo.index.add([self.db_filename])
-
-            # 检查是否有变化
-            if self.repo.is_dirty() or len(self.repo.untracked_files) > 0:
-                # 提交
-                self.repo.index.commit(commit_message)
-
-                # 推送
-                origin = self.repo.remote(name='origin')
-                origin.push(refspec=f'{self.github_branch}:{self.github_branch}')
-
-                return True
-            else:
-                return False  # 无变化
-        except Exception as e:
-            st.error(f"GitHub推送失败: {str(e)}")
-            return False
-
-    def _pull_from_github(self):
-        """从GitHub拉取最新更新"""
-        if not self.use_github or not self.repo:
-            return False
-
-        try:
-            origin = self.repo.remote(name='origin')
-            origin.pull(self.github_branch)
-            return True
-        except Exception as e:
-            st.error(f"GitHub拉取失败: {str(e)}")
-            return False
-
-    def github_push(self, commit_message="更新数据库"):
-        """供外部调用的推送方法"""
-        return self._push_to_github(commit_message)
-
-    def github_pull(self):
-        """供外部调用的拉取方法"""
-        return self._pull_from_github()
-
-    def is_github_dirty(self):
-        """检查本地是否有未提交的修改"""
-        if not self.use_github or not self.repo:
-            return False
-        return self.repo.is_dirty() or len(self.repo.untracked_files) > 0
+        self.db_path = "enterprise_support.db"
+        self.init_database()
 
     def init_database(self):
         """初始化数据库"""
@@ -551,6 +436,7 @@ class EnterpriseSupportSystem:
             print(f"登录错误: {e}")
             return None
 
+    # ... 保持其他方法不变 ...
     def has_permission(self, user_id, permission):
         """检查用户是否拥有特定权限"""
         conn = sqlite3.connect(self.db_path)
@@ -3629,14 +3515,14 @@ def show_system_info():
 
     info = {
         "系统名称": "“一中心一基地”信息管理系统 ",
-        "版本": "2.0.0 (GitHub存储版)",
-        "数据库": "SQLite with GitHub同步",
+        "版本": "2.0.0",
+        "数据库": "SQLite",
         "开发语言": "Python 3.8+",
         "界面框架": "Streamlit",
         "数据格式支持": "CSV, Excel",
         "安全特性": "用户权限管理、操作日志、数据备份",
         "开发者": "一中心一基地",
-        "最后更新": "2026年3月",
+        "最后更新": "2026年1月",
         "技术支持": "support@example.com"
     }
 
@@ -3682,43 +3568,6 @@ def show_system_info():
 
     except Exception as e:
         st.error(f"数据库连接异常: {str(e)}")
-
-    # 显示GitHub同步状态
-    if system.use_github:
-        st.markdown("#### 🔗 GitHub同步状态")
-        st.success("✅ 已启用GitHub存储模式")
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            st.markdown(f"**仓库地址:** `{system.github_repo_url}`")
-            st.markdown(f"**分支:** `{system.github_branch}`")
-
-        with col2:
-            st.markdown(f"**数据库文件:** `{system.db_filename}`")
-            st.markdown(f"**本地路径:** `{system.local_repo_path}`")
-
-        # 检查是否有未提交更改
-        if system.is_github_dirty():
-            st.warning("⚠️ 本地有未提交的修改，请及时推送到GitHub")
-
-            if st.button("📤 立即推送到GitHub", use_container_width=True):
-                if system.github_push("通过系统设置手动推送"):
-                    st.success("✅ 推送成功！")
-                    st.rerun()
-                else:
-                    st.error("❌ 推送失败，请检查网络或权限")
-        else:
-            st.info("✅ 本地已是最新状态")
-
-        if st.button("🔄 从GitHub拉取更新", use_container_width=True):
-            if system.github_pull():
-                st.success("✅ 拉取成功！")
-                st.rerun()
-            else:
-                st.error("❌ 拉取失败，请检查网络或权限")
-    else:
-        st.info("📁 当前使用本地文件模式，未启用GitHub同步")
 
 
 def show_system_settings():
@@ -3892,7 +3741,6 @@ def main():
             show_import_export()
         elif selected_menu == "⚙️ 系统设置":
             show_system_settings()
-
 
 if __name__ == "__main__":
     main()
