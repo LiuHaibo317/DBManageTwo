@@ -1,0 +1,9 @@
+# Streamlit 本地配置文件（可能包含密钥）
+.streamlit/secrets.toml
+
+# Python 缓存
+__pycache__/
+*.pyc
+
+# 其他临时文件
+*.db
