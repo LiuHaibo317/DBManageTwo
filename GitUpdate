@@ -11,4 +11,4 @@ email:12389486@qq.com
 
 git add enterprise_support.db
 git commit -m "导入专精特新企业数据"
-git push
+git push -u origin main
