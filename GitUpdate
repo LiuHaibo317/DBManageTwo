@@ -12,3 +12,21 @@ email:12389486@qq.com
 git add enterprise_support.db
 git commit -m "导入专精特新企业数据"
 git push -u origin main
+
+# 初始化本地仓库
+git init
+
+# 添加所有文件到暂存区（注意 .gitignore 已配置，敏感文件不会被添加）
+git add .
+
+# 提交到本地仓库
+git commit -m "Initial commit"
+
+# 关联远程仓库（将地址替换为你的仓库地址）
+git remote add origin https://github.com/你的用户名/my-streamlit-app.git
+
+# 重命名默认分支为 main
+git branch -M main
+
+# 推送到 GitHub
+git push -u origin main

@@ -1,0 +1,4 @@
+1:
+将2025年湘江新区专精特新中小企业导出.xlsx文件放到DBManage目录下
+2:
+python import_excel_to_db.py "2025年湘江新区专精特新中小企业导出.xlsx"

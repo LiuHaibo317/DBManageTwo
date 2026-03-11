@@ -3053,8 +3053,8 @@ def show_import_export():
         <div class="card">
         <strong>导入说明:</strong><br>
         1. 支持导入 Excel (.xlsx, .xls) 和 CSV (.csv) 格式文件<br>
-        2. 文件第一行应为列标题，与表单字段对应<br>
-        3. 可以选择导入到现有表单或新建表单<br>
+        2. 文件第一行自动作为字段名（列标题）<br>
+        3. 可以选择导入到现有表单，或根据文件列名自动创建新表单<br>
         4. 导入前请确保数据格式正确
         </div>
         """, unsafe_allow_html=True)
@@ -3070,26 +3070,140 @@ def show_import_export():
                 else:
                     df = pd.read_excel(uploaded_file)
 
-                st.success(f"成功读取 {len(df)} 行数据")
+                st.success(f"成功读取 {len(df)} 行数据，{len(df.columns)} 列")
                 st.dataframe(df.head(), use_container_width=True)
 
-                # 选择导入到哪个表单
-                forms = system.get_forms()
-                if forms:
-                    form_options = {f"{form_name} (ID: {form_id})": form_id for form_id, form_name in forms}
-                    selected_form_key = st.selectbox("导入到表单", list(form_options.keys()))
+                # 导入方式选择
+                import_mode = st.radio(
+                    "导入方式",
+                    ["导入到现有表单", "创建新表单并导入"],
+                    horizontal=True,
+                    key="import_mode"
+                )
 
-                    if st.button("开始导入", type="primary"):
-                        form_id = form_options[selected_form_key]
-                        system.save_form_data(form_id, df)
-                        st.success(f"成功导入 {len(df)} 条记录")
-                else:
-                    st.warning("请先创建表单")
+                form_id = None
+                new_form_name = None
+                auto_detect = False
+
+                if import_mode == "导入到现有表单":
+                    forms = system.get_forms()
+                    if forms:
+                        form_options = {f"{form_name} (ID: {form_id})": form_id for form_id, form_name in forms}
+                        selected_form_key = st.selectbox(
+                            "选择目标表单",
+                            list(form_options.keys()),
+                            key="import_existing_form"
+                        )
+                        if selected_form_key:
+                            form_id = form_options[selected_form_key]
+                    else:
+                        st.warning("暂无现有表单，将自动切换为创建新表单模式")
+                        import_mode = "创建新表单并导入"
+                        # 继续执行新表单逻辑（下面会重新渲染，但此处不会自动切换，所以需要手动设置）
+                        # 为了简单，我们让用户重新选择，或者直接在此处改为新表单逻辑
+                        # 这里为了代码流畅，当没有表单时强制使用新表单模式
+                        st.info("请稍后重新选择导入方式或直接使用创建新表单功能")
+                        st.stop()  # 停止执行，让用户重新选择
+
+                if import_mode == "创建新表单并导入":
+                    # 默认表单名使用文件名（不含扩展名）
+                    default_form_name = os.path.splitext(uploaded_file.name)[0] if uploaded_file else "新表单"
+                    new_form_name = st.text_input(
+                        "新表单名称",
+                        value=default_form_name,
+                        key="new_form_name"
+                    )
+                    auto_detect = st.checkbox(
+                        "自动检测字段类型",
+                        value=False,
+                        help="根据数据内容自动推断字段类型（数值列设为数字，日期列设为日期，其余为文本）"
+                    )
+
+                # 导入按钮
+                if st.button("开始导入", type="primary", key="import_button"):
+                    if import_mode == "导入到现有表单":
+                        if form_id is None:
+                            st.error("请选择目标表单")
+                        else:
+                            # 直接保存到现有表单
+                            system.save_form_data(form_id, df)
+                            st.success(f"✅ 成功导入 {len(df)} 条记录到现有表单")
+                            # 记录操作日志
+                            current_user = st.session_state.current_user
+                            system.log_operation(
+                                user_id=current_user['id'],
+                                username=current_user['username'],
+                                operation="import_data",
+                                target_type="form",
+                                target_id=form_id,
+                                details={"rows": len(df), "mode": "existing_form"}
+                            )
+                    else:  # 创建新表单并导入
+                        if not new_form_name:
+                            st.error("请输入新表单名称")
+                        else:
+                            # 检查表单名是否已存在
+                            existing_forms = system.get_forms()
+                            existing_names = [name for _, name in existing_forms]
+                            if new_form_name in existing_names:
+                                st.error(f"表单名称 '{new_form_name}' 已存在，请使用其他名称")
+                            else:
+                                # 构建字段列表
+                                fields = []
+                                for col in df.columns:
+                                    # 字段名转换为字符串（确保无特殊字符）
+                                    field_name = str(col).strip()
+                                    if not field_name:
+                                        field_name = "未命名列"
+                                    field_type = "text"
+                                    if auto_detect:
+                                        # 简单类型推断
+                                        if pd.api.types.is_numeric_dtype(df[col]):
+                                            field_type = "number"
+                                        elif pd.api.types.is_datetime64_any_dtype(df[col]):
+                                            field_type = "date"
+                                        # 其他类型可扩展，这里保持默认text
+                                    fields.append({
+                                        "name": field_name,
+                                        "type": field_type,
+                                        "required": False
+                                    })
+
+                                # 创建新表单
+                                new_form_id = system.create_form(new_form_name, fields)
+
+                                # 记录创建表单操作日志
+                                current_user = st.session_state.current_user
+                                system.log_operation(
+                                    user_id=current_user['id'],
+                                    username=current_user['username'],
+                                    operation="create_form",
+                                    target_type="form",
+                                    target_id=new_form_id,
+                                    details={"form_name": new_form_name, "fields_count": len(fields)}
+                                )
+
+                                # 导入数据
+                                system.save_form_data(new_form_id, df)
+
+                                st.success(f"✅ 成功创建表单 '{new_form_name}' 并导入 {len(df)} 条记录")
+                                st.info(f"字段列表: {', '.join([f['name'] for f in fields])}")
+
+                                # 记录导入操作日志
+                                system.log_operation(
+                                    user_id=current_user['id'],
+                                    username=current_user['username'],
+                                    operation="import_data",
+                                    target_type="form",
+                                    target_id=new_form_id,
+                                    details={"rows": len(df), "mode": "new_form"}
+                                )
 
             except Exception as e:
                 st.error(f"导入失败: {str(e)}")
 
     with tab2:
+        # 原有导出功能保持不变
         st.markdown("### 数据导出")
 
         forms = system.get_forms()
@@ -3130,6 +3244,8 @@ def show_import_export():
                             )
                         except:
                             st.error("请安装openpyxl库: `pip install openpyxl`")
+        else:
+            st.info("暂无表单可导出")
 
 
 def show_user_management():
