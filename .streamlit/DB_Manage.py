@@ -1,5 +1,5 @@
 """
-“一中心一基地”信息管理系统 - Streamlit版本（GitHub存储版）
+全国大学生创新创业成果转化中心数据管理系统 - Streamlit版本（GitHub存储版）
 
 使用说明：
 1. 安装依赖：pip install streamlit pandas openpyxl plotly reportlab GitPython
@@ -28,7 +28,7 @@ from git import Repo
 
 # 设置页面配置（必须在所有Streamlit命令之前）
 st.set_page_config(
-    page_title="“一中心一基地”信息管理系统 ",
+    page_title="全国大学生创新创业成果转化中心数据管理系统 ",
     page_icon="🏢",
     layout="wide",
     initial_sidebar_state="collapsed"  # 手机适配：默认收起侧边栏
@@ -224,7 +224,7 @@ st.markdown("""
 
 
 class EnterpriseSupportSystem:
-    """“一中心一基地”信息管理系统 核心类（支持GitHub存储）"""
+    """全国大学生创新创业成果转化中心数据管理系统 核心类（支持GitHub存储）"""
 
     # 权限常量定义
     PERMISSIONS = {
@@ -3820,7 +3820,7 @@ def show_system_info():
     st.markdown("### ℹ️ 系统信息")
 
     info = {
-        "系统名称": "“一中心一基地”信息管理系统 ",
+        "系统名称": "全国大学生创新创业成果转化中心数据管理系统 ",
         "版本": "2.0.0 (GitHub存储版)",
         "数据库": "SQLite with GitHub同步",
         "开发语言": "Python 3.8+",
@@ -3956,7 +3956,7 @@ def main():
         st.session_state.selected_menu = "🏠 仪表盘"
 
     # 显示标题
-    st.markdown('<h1 class="main-header">“一中心一基地”信息管理系统 </h1>',
+    st.markdown('<h1 class="main-header">全国大学生创新创业成果转化中心数据管理系统 </h1>',
                 unsafe_allow_html=True)
 
     # 侧边栏
