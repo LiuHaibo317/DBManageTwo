@@ -31,12 +31,13 @@ st.set_page_config(
     page_title="“一中心一基地”信息管理系统 ",
     page_icon="🏢",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"  # 手机适配：默认收起侧边栏
 )
 
 # 自定义CSS样式
 st.markdown("""
 <style>
+    /* 原有样式保持不变，在最后添加移动端优化 */
     .main-header {
         font-size: 2.5rem;
         color: #2c3e50;
@@ -142,6 +143,81 @@ st.markdown("""
     .user-status-inactive {
         color: #dc3545;
         font-weight: bold;
+    }
+
+    /* ========== 手机适配优化 ========== */
+    @media (max-width: 768px) {
+        .main-header {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .sub-header {
+            font-size: 1.4rem;
+            margin-top: 1rem;
+        }
+        .card {
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .stat-card {
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+        /* 按钮优化：增大点击区域 */
+        .stButton > button {
+            width: 100% !important;
+            padding: 12px !important;
+            font-size: 1rem !important;
+            margin-bottom: 8px !important;
+        }
+        /* 表格优化：允许水平滚动，防止内容挤压 */
+        .stDataFrame {
+            overflow-x: auto !important;
+            max-width: 100%;
+        }
+        .stDataFrame table {
+            font-size: 0.85rem;
+        }
+        /* 输入框优化 */
+        .stTextInput > div > input, .stNumberInput > div > input, .stTextArea textarea {
+            font-size: 16px !important;  /* 防止iOS自动缩放 */
+        }
+        /* 选择框优化 */
+        .stSelectbox > div > div {
+            font-size: 16px !important;
+        }
+        /* 多列布局调整为垂直排列 */
+        .row-widget.stHorizontal {
+            flex-direction: column !important;
+        }
+        .row-widget.stHorizontal > div {
+            width: 100% !important;
+            margin-right: 0 !important;
+        }
+        /* 标签页优化 */
+        .stTabs [data-baseweb="tab-list"] {
+            flex-wrap: wrap;
+        }
+        .stTabs [data-baseweb="tab"] {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+        /* 侧边栏菜单优化 */
+        .css-1d391kg {  /* 侧边栏容器 */
+            width: 85vw !important;
+        }
+        /* 快速操作列改为垂直 */
+        .stMarkdown + div .row-widget {
+            flex-direction: column;
+        }
+        /* 数字卡片调整 */
+        .stMetric {
+            margin-bottom: 10px;
+        }
+        /* 过滤条件区域优化 */
+        .stExpander {
+            margin-bottom: 10px;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
