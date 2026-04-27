@@ -1753,7 +1753,7 @@ def show_data_management():
                         display_df,
                         key=f"data_editor_{form_id}",
                         num_rows="dynamic",
-                        use_container_width=True,
+                        use_container_width=True,height=650,
                         column_config=None
                     )
 
@@ -1776,7 +1776,7 @@ def show_data_management():
                 else:
                     # 查看模式
                     st.markdown("#### 📋 数据预览（只读模式）")
-                    st.dataframe(display_df, use_container_width=True, height=400)
+                    st.dataframe(display_df, use_container_width=True, height=650)
 
             # ============= 数据操作按钮 =============
             st.markdown("### 💾 数据操作")
