@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD
 全国大学生创新创业成果转化中心·湖南信息管理系统 - Streamlit版本（GitHub存储版）
+=======
+全国大学生创新创业成果转化中心数据管理系统 - Streamlit版本（GitHub存储版）
+>>>>>>> 51044530f41688e5e9adfb397541f151a7c9cf7e
 
 使用说明：
 1. 安装依赖：pip install streamlit pandas openpyxl plotly reportlab GitPython
@@ -28,7 +32,11 @@ from git import Repo
 
 # 设置页面配置（必须在所有Streamlit命令之前）
 st.set_page_config(
+<<<<<<< HEAD
     page_title="全国大学生创新创业成果转化中心·湖南 数据管理系统 ",
+=======
+    page_title="全国大学生创新创业成果转化中心数据管理系统 ",
+>>>>>>> 51044530f41688e5e9adfb397541f151a7c9cf7e
     page_icon="🏢",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -99,7 +107,11 @@ st.markdown("""
 
 
 class EnterpriseSupportSystem:
+<<<<<<< HEAD
     """全国大学生创新创业成果转化中心·湖南 信息管理系统 核心类（支持GitHub存储）"""
+=======
+    """全国大学生创新创业成果转化中心数据管理系统 核心类（支持GitHub存储）"""
+>>>>>>> 51044530f41688e5e9adfb397541f151a7c9cf7e
 
     # 权限常量定义
     PERMISSIONS = {
@@ -3603,7 +3615,11 @@ def show_system_info():
     st.markdown("### ℹ️ 系统信息")
 
     info = {
+<<<<<<< HEAD
         "系统名称": "全国大学生创新创业成果转化中心·湖南 数据管理系统 ",
+=======
+        "系统名称": "全国大学生创新创业成果转化中心数据管理系统 ",
+>>>>>>> 51044530f41688e5e9adfb397541f151a7c9cf7e
         "版本": "2.0.0 (GitHub存储版)",
         "数据库": "SQLite with GitHub同步",
         "开发语言": "Python 3.8+",
@@ -3737,8 +3753,13 @@ def main():
     if 'selected_menu' not in st.session_state:
         st.session_state.selected_menu = "🏠 仪表盘"
 
+<<<<<<< HEAD
     # 标题栏
     st.markdown('<h1 class="main-header">全国大学生创新创业成果转化中心·湖南 数据管理系统</h1>',
+=======
+    # 显示标题
+    st.markdown('<h1 class="main-header">全国大学生创新创业成果转化中心数据管理系统 </h1>',
+>>>>>>> 51044530f41688e5e9adfb397541f151a7c9cf7e
                 unsafe_allow_html=True)
 
     # 侧边栏
