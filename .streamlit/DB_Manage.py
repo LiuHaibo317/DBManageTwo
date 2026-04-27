@@ -37,6 +37,7 @@ st.set_page_config(
 # 自定义CSS样式
 st.markdown("""
 <style>
+    /* ========== 桌面基础样式 ========== */
     .main-header {
         font-size: 2.5rem;
         color: #2c3e50;
@@ -69,7 +70,6 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         margin-bottom: 10px;
     }
-    /* 新增登录页面样式 */
     .login-card {
         background: white;
         border-radius: 15px;
@@ -85,13 +85,101 @@ st.markdown("""
         color: #2c3e50;
         margin-bottom: 30px;
     }
-    /* 响应式优化 */
+
+    /* ========== 移动端适配 (屏幕宽度 ≤ 768px) ========== */
     @media (max-width: 768px) {
+        /* 全局标题缩小 */
         .main-header {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .sub-header {
+            font-size: 1.3rem;
+        }
+        .login-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        /* 卡片内边距压缩 */
+        .card {
+            padding: 10px;
+            margin-bottom: 10px;
         }
         .stat-card {
-            padding: 12px;
+            padding: 10px 5px;
+            margin-bottom: 8px;
+        }
+        .login-card {
+            padding: 20px;
+            margin: 0 10px;
+            max-width: 100%;
+        }
+
+        /* 统计卡片内数字字体大小 */
+        .stat-card h3 {
+            font-size: 1.2rem !important;
+        }
+        .stat-card small {
+            font-size: 0.8rem !important;
+        }
+
+        /* 按钮全宽，增大点击区域 */
+        .stButton > button {
+            width: 100% !important;
+            padding: 12px !important;
+            font-size: 1rem !important;
+            margin-bottom: 8px !important;
+        }
+
+        /* 表格字体缩小并允许横向滚动 */
+        .stDataFrame {
+            overflow-x: auto !important;
+            max-width: 100%;
+        }
+        .stDataFrame table {
+            font-size: 0.8rem;
+        }
+
+        /* 输入框字体不小于16px（防止iOS自动缩放） */
+        .stTextInput input, .stNumberInput input, .stTextArea textarea, .stSelectbox > div > div {
+            font-size: 16px !important;
+        }
+
+        /* 强制多列布局变为垂直堆叠 */
+        .row-widget.stHorizontal, .stColumns {
+            flex-direction: column !important;
+        }
+        .stColumns > div {
+            width: 100% !important;
+            margin-right: 0 !important;
+        }
+
+        /* 标签页文字缩小 */
+        .stTabs [data-baseweb="tab-list"] {
+            flex-wrap: wrap;
+        }
+        .stTabs [data-baseweb="tab"] {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+        }
+
+        /* 展开器边距优化 */
+        .stExpander {
+            margin-bottom: 8px;
+        }
+    }
+
+    /* ========== 超小屏幕 (≤ 480px) ========== */
+    @media (max-width: 480px) {
+        .main-header {
+            font-size: 1.3rem;
+        }
+        .sub-header {
+            font-size: 1.1rem;
+        }
+        .stat-card h3 {
+            font-size: 1rem !important;
         }
     }
 </style>
@@ -1037,11 +1125,11 @@ def show_login_page():
     st.markdown("<br><br><br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.markdown('<div class="login-card">', unsafe_allow_html=True)
+        # st.markdown('<div class="login-card">', unsafe_allow_html=True)
         st.markdown('<div class="login-title">🔐 用户登录</div>', unsafe_allow_html=True)
 
-        username = st.text_input("用户名", key="login_username")
-        password = st.text_input("密码", type="password", key="login_password")
+        username = st.text_input("用户名", key="login_username", label_visibility="visible")
+        password = st.text_input("密码", type="password", key="login_password", label_visibility="visible")
 
         if st.button("登 录", type="primary", use_container_width=True):
             if username and password:
@@ -3741,12 +3829,10 @@ def main():
 
     # 标题栏
     st.markdown('<h1 class="main-header">全国大学生创新创业成果转化中心·湖南 数据管理系统</h1>',
-
                 unsafe_allow_html=True)
 
     # 侧边栏
     with st.sidebar:
-        st.image("https://img.icons8.com/color/96/000000/business.png", width=80)
 
         if not st.session_state.logged_in:
             # 未登录时侧边栏只展示系统信息
