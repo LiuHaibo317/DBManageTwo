@@ -34,89 +34,153 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-st.markdown(
-    '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">',
-    unsafe_allow_html=True
-)
-
 # 自定义CSS样式
 st.markdown("""
 <style>
-    /* ========== 桌面基准 ========== */
-    .main-header { font-size: 2.5rem; color: #2c3e50; text-align: center; margin-bottom: 2rem; font-weight: bold; }
-    .sub-header { font-size: 1.8rem; color: #3498db; margin-top: 1.5rem; font-weight: bold; border-bottom: 2px solid #3498db; padding-bottom: 0.5rem; }
-    .card { background-color: #f8f9fa; border-radius: 10px; padding: 20px; margin-bottom: 20px; border-left: 5px solid #3498db; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 10px; }
-    .login-card { background: white; border-radius: 15px; padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto; }
-    .login-title { text-align: center; font-size: 1.8rem; font-weight: bold; color: #2c3e50; margin-bottom: 30px; }
-
-    /* ========== 移动端强制适配 (≤768px) ========== */
-    @media (max-width: 768px) {
-        /* 全局根字体 */
-        html { font-size: 14px !important; }
-        body { font-size: 0.95rem !important; }
-
-        /* 强制覆盖所有常见文本组件 */
-        h1, h2, h3, h4, h5, h6, p, span, div, li, label, th, td, a, button, input, textarea, select {
-            font-size: inherit !important;
-        }
-
-        /* 标题覆盖 */
-        .main-header { font-size: 1.7rem !important; margin-bottom: 1rem !important; }
-        .sub-header { font-size: 1.3rem !important; margin-top: 1rem !important; }
-        .login-title { font-size: 1.4rem !important; }
-
-        /* 卡片 */
-        .card { padding: 10px !important; margin-bottom: 10px !important; }
-        .stat-card { padding: 10px 5px !important; margin-bottom: 8px !important; }
-        .stat-card h3 { font-size: 1rem !important; }
-        .stat-card small { font-size: 0.7rem !important; }
-        .stat-card p { font-size: 0.8rem !important; }
-
-        /* 按钮 */
-        .stButton > button { width: 100% !important; padding: 12px !important; font-size: 1rem !important; margin-bottom: 8px !important; }
-
-        /* 表格完全覆盖 */
-        .stDataFrame, .stDataEditor { overflow-x: auto !important; max-width: 100% !important; }
-        .stDataFrame table, .stDataEditor table { font-size: 0.8rem !important; }
-        .stDataFrame td, .stDataFrame th, .stDataEditor td, .stDataEditor th {
-            font-size: 0.8rem !important; padding: 4px 6px !important;
-        }
-
-        /* 指标组件 */
-        div[data-testid="stMetricValue"] { font-size: 1rem !important; }
-        div[data-testid="stMetricLabel"] { font-size: 0.8rem !important; }
-
-        /* 表单字段 */
-        .stTextInput input, .stNumberInput input, .stTextArea textarea, .stSelectbox > div > div {
-            font-size: 16px !important; /* 防iOS缩放 */
-        }
-        .stTextInput label, .stNumberInput label, .stTextArea label, .stSelectbox label {
-            font-size: 0.9rem !important;
-        }
-
-        /* 标签页 */
-        .stTabs [data-baseweb="tab-list"] { flex-wrap: wrap; }
-        .stTabs [data-baseweb="tab"] { padding: 6px 8px !important; font-size: 0.85rem !important; }
-
-        /* 展开器 */
-        .stExpander { margin-bottom: 8px !important; }
-        .stExpander details summary { font-size: 0.95rem !important; }
-
-        /* 侧边栏控制 */
-        section[data-testid="stSidebar"] .css-1d391kg { width: 80vw !important; }
-
-        /* 确保列垂直堆叠 */
-        .row-widget.stHorizontal, .stColumns { flex-direction: column !important; }
-        .stColumns > div { width: 100% !important; margin-right: 0 !important; }
+    /* ========== 桌面基础样式 ========== */
+    .main-header {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 2rem;
+        font-weight: bold;
+    }
+    .sub-header {
+        font-size: 1.8rem;
+        color: #3498db;
+        margin-top: 1.5rem;
+        font-weight: bold;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 0.5rem;
+    }
+    .card {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 5px solid #3498db;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 10px;
+    }
+    .login-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    .login-title {
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 30px;
     }
 
-    /* 超小屏进一步缩小 */
+    /* ========== 移动端适配 (屏幕宽度 ≤ 768px) ========== */
+    @media (max-width: 768px) {
+        /* 全局标题缩小 */
+        .main-header {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .sub-header {
+            font-size: 1.3rem;
+        }
+        .login-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        /* 卡片内边距压缩 */
+        .card {
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .stat-card {
+            padding: 10px 5px;
+            margin-bottom: 8px;
+        }
+        .login-card {
+            padding: 20px;
+            margin: 0 10px;
+            max-width: 100%;
+        }
+
+        /* 统计卡片内数字字体大小 */
+        .stat-card h3 {
+            font-size: 1.2rem !important;
+        }
+        .stat-card small {
+            font-size: 0.8rem !important;
+        }
+
+        /* 按钮全宽，增大点击区域 */
+        .stButton > button {
+            width: 100% !important;
+            padding: 12px !important;
+            font-size: 1rem !important;
+            margin-bottom: 8px !important;
+        }
+
+        /* 表格字体缩小并允许横向滚动 */
+        .stDataFrame {
+            overflow-x: auto !important;
+            max-width: 100%;
+        }
+        .stDataFrame table {
+            font-size: 0.8rem;
+        }
+
+        /* 输入框字体不小于16px（防止iOS自动缩放） */
+        .stTextInput input, .stNumberInput input, .stTextArea textarea, .stSelectbox > div > div {
+            font-size: 16px !important;
+        }
+
+        /* 强制多列布局变为垂直堆叠 */
+        .row-widget.stHorizontal, .stColumns {
+            flex-direction: column !important;
+        }
+        .stColumns > div {
+            width: 100% !important;
+            margin-right: 0 !important;
+        }
+
+        /* 标签页文字缩小 */
+        .stTabs [data-baseweb="tab-list"] {
+            flex-wrap: wrap;
+        }
+        .stTabs [data-baseweb="tab"] {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+        }
+
+        /* 展开器边距优化 */
+        .stExpander {
+            margin-bottom: 8px;
+        }
+    }
+
+    /* ========== 超小屏幕 (≤ 480px) ========== */
     @media (max-width: 480px) {
-        html { font-size: 12px !important; }
-        .main-header { font-size: 1.4rem !important; }
-        .sub-header { font-size: 1.1rem !important; }
-        .stat-card h3 { font-size: 0.9rem !important; }
+        .main-header {
+            font-size: 1.3rem;
+        }
+        .sub-header {
+            font-size: 1.1rem;
+        }
+        .stat-card h3 {
+            font-size: 1rem !important;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -1159,21 +1223,6 @@ def show_dashboard():
                 </div>
             """, unsafe_allow_html=True)
 
-  # 企业经营情况
-    st.markdown("### 🛠️ 企业经营情况")
-    cols = st.columns(3)
-    metrics_service = [
-        ("有营收企业", "118", "家"),
-        ("其他融资企业", "18", "家"),
-            ]
-    for col, (label, value, unit) in zip(cols, metrics_service):
-        with col:
-            st.markdown(f"""
-                <div class="stat-card" style="background: linear-gradient(135deg, #FFA751 0%, #FFE259 100%);">
-                    <h3>{value} <small>{unit}</small></h3>
-                    <p>{label}</p>
-                </div>
-            """, unsafe_allow_html=True)
 
 def apply_filters(df, form_id, fields):
     """应用筛选条件到数据框"""
