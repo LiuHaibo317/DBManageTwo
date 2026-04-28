@@ -3840,6 +3840,8 @@ def main():
                     if form_id == st.session_state.current_form:
                         st.info(f"当前表单: {form_name}")
 
+    show_add_to_home_button()
+
     # 主内容区
     if not st.session_state.logged_in:
         show_login_page()  # 替换原有的欢迎页面
@@ -3859,6 +3861,115 @@ def main():
             show_system_settings()
         # 其他页面...
 
+
+def show_add_to_home_button():
+    """在页面右下角显示浮动按钮，点击弹出添加桌面指引（可关闭）"""
+    st.components.v1.html("""
+    <style>
+        #add-to-home-btn {
+            position: fixed;
+            right: 16px;
+            bottom: 80px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            font-size: 20px;
+            line-height: 42px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            cursor: pointer;
+            z-index: 99999;
+            display: block;
+        }
+        #install-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        #install-overlay.show { display: flex; }
+        #install-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 20px 20px;
+            max-width: 280px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        #install-card h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+        #install-card p {
+            font-size: 0.85rem;
+            color: #333;
+            margin: 12px 0 16px;
+            line-height: 1.4;
+        }
+        #install-card button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #install-card button:hover {
+            background: #5a6fd6;
+        }
+        /* 关闭按钮（X）放在卡片右上角，更直观 */
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            color: #888;
+        }
+    </style>
+
+    <div id="add-to-home-btn">＋</div>
+
+    <div id="install-overlay">
+        <div id="install-card">
+            <button class="close-btn" onclick="closeOverlay()">&times;</button>
+            <h3>📲 添加到桌面</h3>
+            <p>
+                <b>Android</b>：点击浏览器菜单，选择“添加到主屏幕”。<br><br>
+                <b>iPhone/iPad</b>：用 Safari 打开，点底部分享图标，选“添加到主屏幕”。
+            </p>
+            <button onclick="closeOverlay()">知道了</button>
+        </div>
+    </div>
+
+    <script>
+        const overlay = document.getElementById('install-overlay');
+        const btn = document.getElementById('add-to-home-btn');
+        btn.addEventListener('click', () => overlay.classList.add('show'));
+
+        function closeOverlay() {
+            overlay.classList.remove('show');
+        }
+        // 点击遮罩层空白处也可关闭
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                closeOverlay();
+            }
+        });
+    </script>
+    """, height=150)  # 适当增加高度，确保按钮和弹窗完整渲染
 
 if __name__ == "__main__":
     main()
