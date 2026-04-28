@@ -3917,11 +3917,13 @@ def show_add_to_home_button():
             background: #667eea;
             color: white;
             border: none;
-            padding: 10px 24px;
+            padding: 10px 20px;
             border-radius: 8px;
             font-size: 1rem;
             cursor: pointer;
-            transition: background 0.2s;
+            display: block;          /* 新增：块级元素，独占一行 */
+            width: 100%;             /* 新增：宽度占满卡片 */
+            box-sizing: border-box;
         }
         #install-card button:hover {
             background: #5a6fd6;
